@@ -1,12 +1,13 @@
 <template>
   <div class="image-gallery overflow-x-scroll flex space-x-2">
     <div
-      v-for="(image, index) in images"
-      :key="index"
-      @click="handleClick(index)"
-      class="inline-block"
+      v-for="(image, idx) in images"
+      :key="idx"
+      @click="handleClick(image)"
+      class="inline-block relative"
     >
-      <img :src="image" class="cursor-pointer" />
+      <span class="absolute bottom-0 text-red-500">{{ image.id }}</span>
+      <img :src="image[index]" class="cursor-pointer" />
     </div>
   </div>
   <Modal :show="modalAberto" @close="modalAberto = !modalAberto">
@@ -22,19 +23,12 @@
 import { defineProps, defineEmits, ref } from "vue";
 import Modal from "../Components/Modal.vue";
 
-const { images } = defineProps(["images"]);
-const emit = defineEmits([]);
+const { images } = defineProps(["images", "index"]);
+const emit = defineEmits(["imageClicked"]);
 
 const modalAberto = ref(false);
 
-const handleClick = (index) => {
-    modalAberto.value = true;
-//   emit("imageClicked", index);
+const handleClick = (image) => {
+  emit("imageClicked", image);
 };
 </script>
-
-<style scoped>
-.image-gallery {
-  height: 500px; /* Altere conforme sua necessidade */
-}
-</style>

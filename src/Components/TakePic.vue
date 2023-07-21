@@ -33,7 +33,7 @@
         </div>
         <div
           v-else
-          class="max-w-xl mx-3 w-full h-screen grid place-items-center"
+          class="max-w-xl mx-3 w-full grid place-items-center"
         >
           <div>
             <h1 class="pb-4 text-xl">
