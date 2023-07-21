@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "dexie": "^3.2.4",
+    "lodash": "^4.17.21",
     "sweetalert2": "^11.7.18",
     "vue": "^3.3.4"
   },
