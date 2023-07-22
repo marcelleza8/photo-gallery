@@ -1,7 +1,7 @@
 import Dexie from "dexie";
 
 const tables = {
-  files: "++id, base64, created_at, updated_at",
+  files: "++id, base64, size, created_at, updated_at",
 }
 
 const db = new Dexie("photo-gallery");
