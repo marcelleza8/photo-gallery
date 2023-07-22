@@ -1,13 +1,15 @@
 <template>
-  <div class="image-gallery overflow-x-scroll flex space-x-2">
+  <div v-if="images.length" class="flex overflow-x-auto space-x-2 bg-red-200">
     <div
       v-for="(image, idx) in images"
       :key="idx"
-      @click="handleClick(image)"
-      class="inline-block relative"
+      @dblclick="handleClick(image)"
+      class="inline-block flex-shrink-0 relative"
     >
-      <span class="absolute bottom-0 text-red-500">{{ image.id }}</span>
-      <img :src="image[index]" class="cursor-pointer" />
+      <span class="absolute bottom-0 bg-white/50 text-back font-semibold"
+        >{{ calculateImageSize(image[index], "k").replace(".", ",") }} KB</span
+      >
+      <img :src="image[index]" class="cursor-pointer h-48" />
     </div>
   </div>
   <Modal :show="modalAberto" @close="modalAberto = !modalAberto">
@@ -22,13 +24,14 @@
 <script setup>
 import { defineProps, defineEmits, ref } from "vue";
 import Modal from "../Components/Modal.vue";
+import { calculateImageSize } from "../Composable/useImageSize";
 
 const { images } = defineProps(["images", "index"]);
-const emit = defineEmits(["imageClicked"]);
+const emit = defineEmits(["imageDblClicked"]);
 
 const modalAberto = ref(false);
 
 const handleClick = (image) => {
-  emit("imageClicked", image);
+  emit("imageDblClicked", image);
 };
 </script>
