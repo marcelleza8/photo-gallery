@@ -19,8 +19,8 @@
   <div>
     <slot name="subheader"></slot>
     <slot name="instructions" v-if="mediaDeviceSelected.id">
-      <div class="font-bold px-3 pb-3 text-center text-white text-xl">
-        Toque na imagem para tirar uma foto
+      <div class="font-bold px-3 pb-3 text-center text-black">
+        Um toque na imagem para tirar uma foto
       </div>
     </slot>
   </div>
@@ -30,11 +30,12 @@
         <div v-if="mediaDeviceSelected.id" class="relative w-5/6 mx-auto">
           <video ref="video" @click="takePhoto" class="" autoplay></video>
           <canvas ref="canvas" class="hidden"></canvas>
+          <div
+            class="absolute inset-0 hidden"
+            :class="{ 'flash-effect': showFlash }"
+          ></div>
         </div>
-        <div
-          v-else
-          class="max-w-xl mx-3 w-full grid place-items-center"
-        >
+        <div v-else class="max-w-xl mx-3 w-full grid place-items-center">
           <div>
             <h1 class="pb-4 text-xl">
               Selecione uma das câmeras do seu smartprone
@@ -63,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, inject, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 let props = defineProps({
   header: {
@@ -87,6 +88,8 @@ let video = ref(null);
 let canvas = ref();
 let imageUrl = ref();
 
+const showFlash = ref(false);
+
 const takePhoto = () => {
   emits("update:processing", true);
 
@@ -98,8 +101,10 @@ const takePhoto = () => {
       ctx.drawImage(video.value, 0, 0, canvas.value.width, canvas.value.height);
     }
     imageUrl.value = canvas.value.toDataURL("image/jpg", props.quality);
+    showFlash.value = true;
     emits("snap", imageUrl.value);
     setTimeout(() => {
+      showFlash.value = false;
       emits("update:processing", false);
     }, 1);
   }
@@ -120,14 +125,12 @@ const friendlyDeviceName = (label) => {
     return `Câmera ${cameraFacing} ${cameraNumber}`;
   }
 
-  // Check for 'audioinput' and 'audiooutput' and make them more friendly
   if (label.includes("audioinput")) {
     return "Microphone";
   } else if (label.includes("audiooutput")) {
     return "Speaker";
   }
 
-  // If none of the above, return original label
   return label;
 };
 
@@ -199,6 +202,23 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
+@keyframes flash {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: white;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.flash-effect {
+  display: block !important;
+  animation: flash 0.5s;
+}
+
 .alert {
   @apply bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3 mb-5 shadow-md flex place-content-between;
 }
